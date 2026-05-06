@@ -173,8 +173,76 @@ export default function App() {
   }
 
   function handlePrint() {
-    if (!selected || !settings) return;
-    window.print();
+    if (!selected || !settings || !printRootRef.current) return;
+
+    const labelMarkup = printRootRef.current.innerHTML;
+    const headMarkup = Array.from(document.head.querySelectorAll('style, link[rel="stylesheet"]'))
+      .map((node) => node.outerHTML)
+      .join('\n');
+
+    const printWindow = window.open('', '_blank', 'width=420,height=320');
+    if (!printWindow) {
+      setError('Unable to open print window. Please allow pop-ups for this site.');
+      return;
+    }
+
+    printWindow.document.open();
+    printWindow.document.write(`
+      <!doctype html>
+      <html lang="th">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Print Label</title>
+          ${headMarkup}
+          <style>
+            @page { size: 90mm 65mm; margin: 0; }
+            html, body {
+              margin: 0;
+              padding: 0;
+              width: 90mm;
+              height: 65mm;
+              overflow: hidden;
+              background: #fff;
+            }
+            body {
+              display: flex;
+              align-items: flex-start;
+              justify-content: flex-start;
+            }
+            .label-print-root {
+              display: block !important;
+              width: 90mm;
+              height: 65mm;
+              margin: 0;
+              padding: 0;
+              overflow: hidden;
+            }
+            .label {
+              margin: 0 !important;
+              border: none !important;
+              box-shadow: none !important;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="label-print-root">${labelMarkup}</div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+
+    const runPrint = () => {
+      printWindow.print();
+      printWindow.close();
+    };
+
+    if (printWindow.document.readyState === 'complete') {
+      setTimeout(runPrint, 150);
+    } else {
+      printWindow.addEventListener('load', () => setTimeout(runPrint, 150), { once: true });
+    }
   }
 
   return (
