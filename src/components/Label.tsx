@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import type { Medicine, ShopSettings } from '../types';
 import { formatBeDate } from '../lib/format';
+import aninLogo from '../assets/anin-logo.png';
 
 interface Props {
   medicine: Medicine;
@@ -21,7 +22,7 @@ export const Label = forwardRef<HTMLDivElement, Props>(
       >
         <div className="label-header">
           <div className="label-shop">
-            <div className="label-logo">{settings.logo_text}</div>
+            <img className="label-logo-image" src={aninLogo} alt="ANIN logo" />
             <div>
               <div className="label-shop-name-th">{settings.shop_name_th}</div>
               <div className="label-shop-name-en">{settings.shop_name_en}</div>

@@ -288,19 +288,14 @@
   flex: 1;
 }
 
-.label-logo {
-  width: 9mm;
-  height: 9mm;
-  border-radius: 50%;
-  background: #000;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Lilita One', cursive;
-  font-size: 7pt;
-  letter-spacing: 0.3px;
+.label-logo-image {
+  width: 17mm;
+  height: auto;
+  max-height: 9mm;
+  object-fit: contain;
+  object-position: left center;
   flex-shrink: 0;
+  display: block;
 }
 
 .label-shop-name-th {
