@@ -3,13 +3,14 @@ import { createClient } from '@supabase/supabase-js';
 const url = import.meta.env.VITE_SUPABASE_URL;
 const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!url || !key) {
-  throw new Error(
-    'Missing Supabase env. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local'
-  );
-}
+export const supabaseConfigError =
+  !url || !key
+    ? 'Missing Supabase env. Configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY for this deployment.'
+    : null;
 
-export const supabase = createClient(url, key, {
-  db: { schema: 'label' },
-  auth: { persistSession: false }
-});
+export const supabase = url && key
+  ? createClient(url, key, {
+      db: { schema: 'label' },
+      auth: { persistSession: false }
+    })
+  : null;

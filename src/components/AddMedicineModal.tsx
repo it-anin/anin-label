@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, supabaseConfigError } from '../lib/supabase';
 import { LANGS, type Lang } from '../types';
 
 type TrForm = {
@@ -64,6 +64,8 @@ export function AddMedicineModal({ onClose, onSaved }: Props) {
   async function handleSave() {
     const sku = form.sku.trim();
     if (!sku) { setError('กรุณากรอก SKU'); return; }
+
+    if (!supabase) { setError(supabaseConfigError ?? 'Supabase is not configured.'); return; }
 
     setSaving(true);
     setError(null);
