@@ -79,7 +79,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (lastQuery) void doSearch(lastQuery, lang);
+    if (lastQuery) void doSearch(lastQuery, lang, selected?.id);
   }, [lang, lastQuery]);
 
   async function loadMedicinesByIds(ids: string[], searchLang: Lang) {
@@ -122,7 +122,7 @@ export default function App() {
       .filter((medicine): medicine is Medicine => medicine !== null);
   }
 
-  async function doSearch(q: string, searchLang: Lang) {
+  async function doSearch(q: string, searchLang: Lang, preserveSelectedId?: string) {
     if (!supabase) {
       setError(supabaseConfigError ?? 'Supabase is not configured.');
       setSearched(true);
@@ -151,7 +151,7 @@ export default function App() {
         searchLang
       );
       setResults(meds);
-      setSelected(meds.length === 1 ? meds[0] : null);
+      setSelected(preserveSelectedId ? (meds.find((m) => m.id === preserveSelectedId) ?? (meds.length === 1 ? meds[0] : null)) : (meds.length === 1 ? meds[0] : null));
       setLoading(false);
       return;
     }
@@ -178,7 +178,7 @@ export default function App() {
 
     const meds = await loadMedicinesByIds(ids, searchLang);
     setResults(meds);
-    setSelected(meds.length === 1 ? meds[0] : null);
+    setSelected(preserveSelectedId ? (meds.find((m) => m.id === preserveSelectedId) ?? (meds.length === 1 ? meds[0] : null)) : (meds.length === 1 ? meds[0] : null));
     setLoading(false);
   }
 
