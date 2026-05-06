@@ -336,6 +336,18 @@
   font-size: 7pt;
 }
 
+.label-icon-line {
+  min-width: 6mm;
+  padding: 0 1.2mm;
+  border-radius: 999px;
+  background: #06c755;
+  color: #fff;
+  font-size: 5.8pt;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  line-height: 1.4;
+}
+
 .label-date {
   font-size: 7.5pt;
   font-weight: 500;

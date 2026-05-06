@@ -33,7 +33,7 @@ export const Label = forwardRef<HTMLDivElement, Props>(
               <span>{settings.phone}</span>
             </div>
             <div className="label-contact-row">
-              <span className="label-icon">🕐</span>
+              <span className="label-icon label-icon-line">LINE</span>
               <span>{settings.line_id}</span>
             </div>
             <div className="label-date">{dateStr}</div>
