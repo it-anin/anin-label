@@ -1,0 +1,1 @@
+- [anin-label project context](project_anin_label.md) — BIGYA Sriracha label printer; React+Vite+TS+Supabase; isolated `label` schema
