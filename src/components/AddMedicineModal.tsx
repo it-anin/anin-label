@@ -12,8 +12,12 @@ type TrForm = {
 };
 
 const emptyTr = (): TrForm => ({
-  trade_name: '', generic_name: '', usage: '',
-  indication: '', warning: '', storage: '',
+  trade_name: '',
+  generic_name: '',
+  usage: '',
+  indication: '',
+  warning: '',
+  storage: '',
 });
 
 type FormData = {
@@ -26,18 +30,22 @@ const initForm = (): FormData => ({
   sku: '',
   barcode: '',
   translations: {
-    th: emptyTr(), en: emptyTr(), zh: emptyTr(),
-    ja: emptyTr(), my: emptyTr(), km: emptyTr(),
+    th: emptyTr(),
+    en: emptyTr(),
+    zh: emptyTr(),
+    ja: emptyTr(),
+    my: emptyTr(),
+    km: emptyTr(),
   },
 });
 
 const FIELDS: { key: keyof TrForm; labelTh: string; labelEn: string; type: 'input' | 'textarea' }[] = [
-  { key: 'trade_name',   labelTh: 'ชื่อการค้า',    labelEn: 'Trade name',  type: 'input'    },
-  { key: 'generic_name', labelTh: 'ชื่อยา',         labelEn: 'Generic name',type: 'input'    },
-  { key: 'usage',        labelTh: 'วิธีใช้',         labelEn: 'Usage',       type: 'textarea' },
-  { key: 'indication',   labelTh: 'ข้อบ่งใช้',      labelEn: 'Indication',  type: 'textarea' },
-  { key: 'warning',      labelTh: 'ข้อควรระวัง',    labelEn: 'Warning',     type: 'textarea' },
-  { key: 'storage',      labelTh: 'การเก็บรักษา',  labelEn: 'Storage',     type: 'input'    },
+  { key: 'trade_name', labelTh: 'ชื่อการค้า', labelEn: 'Trade name', type: 'input' },
+  { key: 'generic_name', labelTh: 'ชื่อยา', labelEn: 'Generic name', type: 'input' },
+  { key: 'usage', labelTh: 'วิธีใช้', labelEn: 'Usage', type: 'textarea' },
+  { key: 'indication', labelTh: 'ข้อบ่งใช้', labelEn: 'Indication', type: 'textarea' },
+  { key: 'warning', labelTh: 'ข้อควรระวัง', labelEn: 'Warning', type: 'textarea' },
+  { key: 'storage', labelTh: 'การเก็บรักษา', labelEn: 'Storage', type: 'input' },
 ];
 
 interface Props {
@@ -46,13 +54,13 @@ interface Props {
 }
 
 export function AddMedicineModal({ onClose, onSaved }: Props) {
-  const [form, setForm]           = useState<FormData>(initForm);
+  const [form, setForm] = useState<FormData>(initForm);
   const [activeLang, setActiveLang] = useState<Lang>('th');
-  const [saving, setSaving]       = useState(false);
-  const [error, setError]         = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   function setField(field: keyof TrForm, value: string) {
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
       translations: {
         ...prev.translations,
@@ -63,20 +71,22 @@ export function AddMedicineModal({ onClose, onSaved }: Props) {
 
   async function handleSave() {
     const sku = form.sku.trim();
-    if (!sku) { setError('กรุณากรอก SKU'); return; }
+    if (!sku) {
+      setError('กรุณากรอก SKU');
+      return;
+    }
 
-    if (!supabase) { setError(supabaseConfigError ?? 'Supabase is not configured.'); return; }
+    if (!supabase) {
+      setError(supabaseConfigError ?? 'Supabase is not configured.');
+      return;
+    }
 
     setSaving(true);
     setError(null);
 
-    // 1. Upsert medicine row
     const { data: med, error: medErr } = await supabase
       .from('medicines')
-      .upsert(
-        { sku, barcode: form.barcode.trim() || null },
-        { onConflict: 'sku' }
-      )
+      .upsert({ sku, barcode: form.barcode.trim() || null }, { onConflict: 'sku' })
       .select('id')
       .single();
 
@@ -86,18 +96,17 @@ export function AddMedicineModal({ onClose, onSaved }: Props) {
       return;
     }
 
-    // 2. Upsert translations that have at least trade_name
     const rows = Object.entries(form.translations)
       .filter(([, tr]) => tr.trade_name.trim())
       .map(([lang, tr]) => ({
-        medicine_id:  med.id,
+        medicine_id: med.id,
         lang,
-        trade_name:   tr.trade_name.trim()   || null,
+        trade_name: tr.trade_name.trim() || null,
         generic_name: tr.generic_name.trim() || null,
-        usage:        tr.usage.trim()        || null,
-        indication:   tr.indication.trim()   || null,
-        warning:      tr.warning.trim()      || null,
-        storage:      tr.storage.trim()      || null,
+        usage: tr.usage.trim() || null,
+        indication: tr.indication.trim() || null,
+        warning: tr.warning.trim() || null,
+        storage: tr.storage.trim() || null,
       }));
 
     if (rows.length > 0) {
@@ -121,20 +130,23 @@ export function AddMedicineModal({ onClose, onSaved }: Props) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal add-medicine-modal" onClick={e => e.stopPropagation()}>
+      <div className="modal add-medicine-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>เพิ่มฉลากยาใหม่</h2>
-          <button className="modal-close" onClick={onClose}>×</button>
+          <button className="modal-close" onClick={onClose} type="button">
+            ×
+          </button>
         </div>
 
         <div className="add-form-body">
-          {/* SKU + Barcode */}
           <div className="add-form-row">
             <div className="add-form-field">
-              <label>SKU <span style={{ color: '#e53e3e' }}>*</span></label>
+              <label>
+                SKU <span style={{ color: '#e53e3e' }}>*</span>
+              </label>
               <input
                 value={form.sku}
-                onChange={e => setForm(p => ({ ...p, sku: e.target.value }))}
+                onChange={(e) => setForm((p) => ({ ...p, sku: e.target.value }))}
                 placeholder="เช่น 100238"
                 autoFocus
               />
@@ -143,7 +155,7 @@ export function AddMedicineModal({ onClose, onSaved }: Props) {
               <label>Barcode</label>
               <input
                 value={form.barcode}
-                onChange={e => setForm(p => ({ ...p, barcode: e.target.value }))}
+                onChange={(e) => setForm((p) => ({ ...p, barcode: e.target.value }))}
                 placeholder="(ถ้ามี)"
               />
             </div>
@@ -151,7 +163,6 @@ export function AddMedicineModal({ onClose, onSaved }: Props) {
 
           <div className="add-form-divider" />
 
-          {/* Language tabs */}
           <div className="add-form-langs">
             <span className="add-form-langs-label">ภาษา:</span>
             {LANGS.map(({ code, label }) => {
@@ -170,7 +181,6 @@ export function AddMedicineModal({ onClose, onSaved }: Props) {
             })}
           </div>
 
-          {/* Fields for active language */}
           <div className="add-form-fields">
             {FIELDS.map(({ key, labelTh, labelEn, type }) => (
               <div key={key} className="add-form-field full">
@@ -181,14 +191,14 @@ export function AddMedicineModal({ onClose, onSaved }: Props) {
                 {type === 'textarea' ? (
                   <textarea
                     value={tr[key]}
-                    onChange={e => setField(key, e.target.value)}
+                    onChange={(e) => setField(key, e.target.value)}
                     rows={2}
                     placeholder="(ไม่บังคับ)"
                   />
                 ) : (
                   <input
                     value={tr[key]}
-                    onChange={e => setField(key, e.target.value)}
+                    onChange={(e) => setField(key, e.target.value)}
                     placeholder={key === 'trade_name' ? 'ชื่อการค้า (จำเป็น)' : '(ไม่บังคับ)'}
                   />
                 )}
@@ -205,11 +215,12 @@ export function AddMedicineModal({ onClose, onSaved }: Props) {
             onClick={onClose}
             style={{ padding: '10px 24px', fontSize: '14px', color: 'var(--color-text-sub)' }}
             disabled={saving}
+            type="button"
           >
             ยกเลิก
           </button>
-          <button className="btn-gold" onClick={handleSave} disabled={saving}>
-            {saving ? 'กำลังบันทึก…' : 'บันทึก'}
+          <button className="btn-gold" onClick={handleSave} disabled={saving} type="button">
+            {saving ? 'กำลังบันทึก...' : 'บันทึก'}
           </button>
         </div>
       </div>

@@ -45,11 +45,11 @@ export const Label = forwardRef<HTMLDivElement, Props>(
 
         <div className="label-section">
           <div>
-            <strong>เธเธทเนเธญเธเธฒเธฃเธเนเธฒ:</strong> {medicine.trade_name}
+            <strong>ชื่อการค้า:</strong> {medicine.trade_name}
           </div>
           {medicine.generic_name && (
             <div>
-              <strong>เธเธทเนเธญเธขเธฒ:</strong> {medicine.generic_name}
+              <strong>ชื่อยา:</strong> {medicine.generic_name}
             </div>
           )}
         </div>
@@ -58,13 +58,13 @@ export const Label = forwardRef<HTMLDivElement, Props>(
 
         {medicine.usage && (
           <div className="label-section">
-            <strong>เธงเธดเธเธตเนเธเน:</strong> {medicine.usage}
+            <strong>วิธีใช้:</strong> {medicine.usage}
           </div>
         )}
 
         {medicine.indication && (
           <div className="label-section">
-            <strong>เธเนเธญเธเนเธเนเธเน:</strong> {medicine.indication}
+            <strong>ข้อบ่งใช้:</strong> {medicine.indication}
           </div>
         )}
 
@@ -72,12 +72,12 @@ export const Label = forwardRef<HTMLDivElement, Props>(
           <div className="label-warn">
             {medicine.warning && (
               <div className="label-section">
-                <strong>เธเนเธญเธเธงเธฃเธฃเธฐเธงเธฑเธ:</strong> {medicine.warning}
+                <strong>ข้อควรระวัง:</strong> {medicine.warning}
               </div>
             )}
             {medicine.storage && (
               <div className="label-section">
-                <strong>เน€เธเนเธเธฃเธฑเธเธฉเธฒ:</strong> {medicine.storage}
+                <strong>การเก็บรักษา:</strong> {medicine.storage}
               </div>
             )}
           </div>
