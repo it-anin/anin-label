@@ -21,13 +21,13 @@ export function SearchBar({ onSubmit, loading, placeholder }: Props) {
         className="search-input"
         type="text"
         autoFocus
-        placeholder={placeholder ?? 'พิมพ์ SKU / บาร์โค้ด / ชื่อยา แล้วกด Enter'}
+        placeholder={placeholder ?? 'Search by SKU / barcode / product name / medicine name'}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         disabled={loading}
       />
       <button className="search-btn" type="submit" disabled={loading} aria-label="search">
-        {loading ? '…' : '→'}
+        {loading ? '...' : '->'}
       </button>
     </form>
   );

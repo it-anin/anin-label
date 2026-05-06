@@ -17,7 +17,9 @@ export function ResultList({ results, selectedId, onSelect }: Props) {
           className={`result-row ${m.id === selectedId ? 'selected' : ''}`}
           onClick={() => onSelect(m)}
           type="button"
+          aria-pressed={m.id === selectedId}
         >
+          <span className="result-pick">{m.id === selectedId ? 'Selected' : 'Select'}</span>
           <span className="result-sku">{m.sku}</span>
           <span className="result-name">{m.trade_name}</span>
           {m.generic_name && (

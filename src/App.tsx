@@ -67,6 +67,46 @@ export default function App() {
     if (lastQuery) void doSearch(lastQuery, lang);
   }, [lang, lastQuery]);
 
+  async function loadMedicinesByIds(ids: string[], searchLang: Lang) {
+    if (!supabase || ids.length === 0) {
+      return [];
+    }
+
+    const { data: medicinesData, error: medicinesError } = await supabase
+      .from('medicines')
+      .select('id, sku, barcode')
+      .in('id', ids);
+
+    if (medicinesError) {
+      throw medicinesError;
+    }
+
+    const { data: translationsData, error: translationsError } = await supabase
+      .from('medicine_translations')
+      .select('medicine_id, trade_name, generic_name, usage, indication, warning, storage')
+      .in('medicine_id', ids)
+      .eq('lang', searchLang);
+
+    if (translationsError) {
+      throw translationsError;
+    }
+
+    const translationMap = new Map(
+      (translationsData ?? []).map((translation) => [translation.medicine_id, translation])
+    );
+    const medicineMap = new Map(
+      (medicinesData ?? []).map((medicine) => [medicine.id, medicine])
+    );
+
+    return ids
+      .map((id) => {
+        const medicine = medicineMap.get(id);
+        if (!medicine) return null;
+        return flatMed(medicine, translationMap.get(id) ?? null);
+      })
+      .filter((medicine): medicine is Medicine => medicine !== null);
+  }
+
   async function doSearch(q: string, searchLang: Lang) {
     if (!supabase) {
       setError(supabaseConfigError ?? 'Supabase is not configured.');
@@ -91,26 +131,10 @@ export default function App() {
     }
 
     if (exactMeds && exactMeds.length > 0) {
-      const medList = exactMeds as { id: string; sku: string; barcode: string | null }[];
-      const ids = medList.map((m) => m.id);
-      const { data: trList, error: translationError } = await supabase
-        .from('medicine_translations')
-        .select('medicine_id,trade_name,generic_name,usage,indication,warning,storage')
-        .in('medicine_id', ids)
-        .eq('lang', searchLang);
-
-      if (translationError) {
-        setError(translationError.message);
-        setLoading(false);
-        return;
-      }
-
-      const trMap: Record<string, (typeof trList)[number]> = {};
-      for (const t of trList ?? []) {
-        trMap[(t as { medicine_id: string }).medicine_id] = t;
-      }
-
-      const meds = medList.map((m) => flatMed(m, trMap[m.id] ?? null));
+      const meds = await loadMedicinesByIds(
+        (exactMeds as { id: string }[]).map((medicine) => medicine.id),
+        searchLang
+      );
       setResults(meds);
       setSelected(meds.length === 1 ? meds[0] : null);
       setLoading(false);
@@ -119,10 +143,9 @@ export default function App() {
 
     const { data: list, error: fuzzyError } = await supabase
       .from('medicine_translations')
-      .select('trade_name,generic_name,usage,indication,warning,storage,medicines!inner(id,sku,barcode)')
-      .eq('lang', searchLang)
+      .select('medicine_id')
       .or(`trade_name.ilike.%${q}%,generic_name.ilike.%${q}%`)
-      .limit(30);
+      .limit(50);
 
     if (fuzzyError) {
       setError(fuzzyError.message);
@@ -130,17 +153,15 @@ export default function App() {
       return;
     }
 
-    type Row = {
-      trade_name: string | null;
-      generic_name: string | null;
-      usage: string | null;
-      indication: string | null;
-      warning: string | null;
-      storage: string | null;
-      medicines: { id: string; sku: string; barcode: string | null }[];
-    };
+    const ids = Array.from(
+      new Set(
+        (list ?? [])
+          .map((row) => row.medicine_id)
+          .filter((medicineId): medicineId is string => Boolean(medicineId))
+      )
+    ).slice(0, 30);
 
-    const meds = (list as unknown as Row[]).map((r) => flatMed(r.medicines[0], r));
+    const meds = await loadMedicinesByIds(ids, searchLang);
     setResults(meds);
     setSelected(meds.length === 1 ? meds[0] : null);
     setLoading(false);
@@ -180,13 +201,16 @@ export default function App() {
           {error && <div className="error-line">{error}</div>}
           {loading && <div className="status-line">Searching...</div>}
           {!loading && !searched && (
-            <div className="status-line">Scan barcode or search by SKU / medicine name to begin.</div>
+            <div className="status-line">Scan barcode or search by SKU / product name to begin.</div>
+          )}
+          {!loading && results.length > 1 && (
+            <div className="status-line">Select one item from the list to preview and print only that label.</div>
           )}
           {!loading && searched && results.length === 0 && !error && (
             <div className="empty-state" style={{ boxShadow: 'none', padding: '2rem 1rem' }}>
               <div className="empty-icon">Search</div>
               <h3>No results found</h3>
-              <p>Try another SKU, barcode, or medicine name.</p>
+              <p>Try another SKU, barcode, or product name.</p>
             </div>
           )}
           <ResultList results={results} selectedId={selected?.id ?? null} onSelect={setSelected} />
