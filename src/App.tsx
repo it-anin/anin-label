@@ -47,6 +47,7 @@ export default function App() {
   const [searched, setSearched] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showAdd, setShowAdd] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const printRootRef = useRef<HTMLDivElement>(null);
   const selectedBranch = BRANCH_PROFILES.find((branch) => branch.id === selectedBranchId) ?? BRANCH_PROFILES[0];
   const activeSettings = settings
@@ -333,6 +334,9 @@ export default function App() {
                 <Label medicine={selected} settings={activeSettings} preview />
               </div>
               <div className="print-actions">
+                <button className="btn-edit-label" onClick={() => setShowEdit(true)} type="button">
+                  แก้ไขข้อมูล
+                </button>
                 <button className="btn-gold" onClick={handlePrint} type="button">
                   Print label
                 </button>
@@ -356,6 +360,17 @@ export default function App() {
           onSaved={(sku) => {
             setShowAdd(false);
             search(sku);
+          }}
+        />
+      )}
+
+      {showEdit && selected && (
+        <AddMedicineModal
+          initialMedicineId={selected.id}
+          onClose={() => setShowEdit(false)}
+          onSaved={(sku) => {
+            setShowEdit(false);
+            void doSearch(sku, lang, selected.id);
           }}
         />
       )}
