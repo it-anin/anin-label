@@ -2,6 +2,8 @@ import { forwardRef } from 'react';
 import type { Medicine, ShopSettings } from '../types';
 import { formatBeDate } from '../lib/format';
 import aninLogo from '../assets/anin-logo.png';
+import lineIcon from '../assets/line-icon.png';
+import phoneIcon from '../assets/phone-icon.png';
 
 interface Props {
   medicine: Medicine;
@@ -30,11 +32,11 @@ export const Label = forwardRef<HTMLDivElement, Props>(
           </div>
           <div className="label-contact">
             <div className="label-contact-row">
-              <span className="label-icon label-icon-tel">TEL</span>
+              <img className="label-contact-icon" src={phoneIcon} alt="Phone" />
               <span>{settings.phone}</span>
             </div>
             <div className="label-contact-row">
-              <span className="label-icon label-icon-line">LINE</span>
+              <img className="label-contact-icon" src={lineIcon} alt="LINE" />
               <span>{settings.line_id}</span>
             </div>
             <div className="label-date">{dateStr}</div>

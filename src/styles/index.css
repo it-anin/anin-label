@@ -324,36 +324,12 @@
   gap: 1.2mm;
 }
 
-.label-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 7pt;
-  color: #000;
-}
-
-.label-icon-line {
-  min-width: 6mm;
-  padding: 0 1.2mm;
-  border-radius: 999px;
-  background: #000;
-  color: #fff;
-  font-size: 5.8pt;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-  line-height: 1.4;
-}
-
-.label-icon-tel {
-  min-width: 6mm;
-  padding: 0 1.2mm;
-  border-radius: 999px;
-  background: #000;
-  color: #fff;
-  font-size: 5.8pt;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-  line-height: 1.4;
+.label-contact-icon {
+  width: 4.5mm;
+  height: 4.5mm;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
 }
 
 .label-date {
