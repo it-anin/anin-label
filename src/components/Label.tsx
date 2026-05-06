@@ -30,7 +30,7 @@ export const Label = forwardRef<HTMLDivElement, Props>(
           </div>
           <div className="label-contact">
             <div className="label-contact-row">
-              <span className="label-icon">📞</span>
+              <span className="label-icon label-icon-tel">TEL</span>
               <span>{settings.phone}</span>
             </div>
             <div className="label-contact-row">
@@ -45,11 +45,11 @@ export const Label = forwardRef<HTMLDivElement, Props>(
 
         <div className="label-section">
           <div>
-            <strong>ชื่อการค้า:</strong> {medicine.trade_name}
+            <strong>เธเธทเนเธญเธเธฒเธฃเธเนเธฒ:</strong> {medicine.trade_name}
           </div>
           {medicine.generic_name && (
             <div>
-              <strong>ชื่อยา:</strong> {medicine.generic_name}
+              <strong>เธเธทเนเธญเธขเธฒ:</strong> {medicine.generic_name}
             </div>
           )}
         </div>
@@ -58,13 +58,13 @@ export const Label = forwardRef<HTMLDivElement, Props>(
 
         {medicine.usage && (
           <div className="label-section">
-            <strong>วิธีใช้:</strong> {medicine.usage}
+            <strong>เธงเธดเธเธตเนเธเน:</strong> {medicine.usage}
           </div>
         )}
 
         {medicine.indication && (
           <div className="label-section">
-            <strong>ข้อบ่งใช้:</strong> {medicine.indication}
+            <strong>เธเนเธญเธเนเธเนเธเน:</strong> {medicine.indication}
           </div>
         )}
 
@@ -72,12 +72,12 @@ export const Label = forwardRef<HTMLDivElement, Props>(
           <div className="label-warn">
             {medicine.warning && (
               <div className="label-section">
-                <strong>ข้อควรระวัง:</strong> {medicine.warning}
+                <strong>เธเนเธญเธเธงเธฃเธฃเธฐเธงเธฑเธ:</strong> {medicine.warning}
               </div>
             )}
             {medicine.storage && (
               <div className="label-section">
-                <strong>เก็บรักษา:</strong> {medicine.storage}
+                <strong>เน€เธเนเธเธฃเธฑเธเธฉเธฒ:</strong> {medicine.storage}
               </div>
             )}
           </div>
