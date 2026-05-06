@@ -6,6 +6,12 @@ import { SearchBar } from './components/SearchBar';
 import { ResultList } from './components/ResultList';
 import { AddMedicineModal } from './components/AddMedicineModal';
 
+const BRANCH_PROFILES = [
+  { id: 'hq', shop_name_th: 'สำนักงานใหญ่', shop_name_en: 'Head Office' },
+  { id: 'nine-kilo', shop_name_th: 'สาขาเก้ากิโล', shop_name_en: 'Nine Kilo Branch' },
+  { id: 'suan-suea', shop_name_th: 'สาขาสวนเสือศรีราชา', shop_name_en: 'Suan Suea Si Racha Branch' },
+] as const;
+
 function flatMed(
   med: { id: string; sku: string; barcode: string | null },
   tr: {
@@ -32,6 +38,7 @@ function flatMed(
 
 export default function App() {
   const [settings, setSettings] = useState<ShopSettings | null>(null);
+  const [selectedBranchId, setSelectedBranchId] = useState<(typeof BRANCH_PROFILES)[number]['id']>('hq');
   const [lang, setLang] = useState<Lang>('th');
   const [lastQuery, setLastQuery] = useState('');
   const [results, setResults] = useState<Medicine[]>([]);
@@ -41,6 +48,14 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [showAdd, setShowAdd] = useState(false);
   const printRootRef = useRef<HTMLDivElement>(null);
+  const selectedBranch = BRANCH_PROFILES.find((branch) => branch.id === selectedBranchId) ?? BRANCH_PROFILES[0];
+  const activeSettings = settings
+    ? {
+        ...settings,
+        shop_name_th: selectedBranch.shop_name_th,
+        shop_name_en: selectedBranch.shop_name_en,
+      }
+    : null;
 
   useEffect(() => {
     if (!supabase) {
@@ -173,7 +188,7 @@ export default function App() {
   }
 
   function handlePrint() {
-    if (!selected || !settings || !printRootRef.current) return;
+    if (!selected || !activeSettings || !printRootRef.current) return;
 
     const labelMarkup = printRootRef.current.innerHTML;
     const headMarkup = Array.from(document.head.querySelectorAll('style, link[rel="stylesheet"]'))
@@ -249,9 +264,21 @@ export default function App() {
     <div className="app-container">
       <header className="hero-header">
         <div className="hero-content">
-          <div className="logo-premium">{settings?.logo_text ?? 'BIGYA'} LABEL</div>
+          <div className="logo-premium">ANIN LABEL</div>
           <div className="tagline">
-            {settings ? `${settings.shop_name_th} | ${settings.shop_name_en}` : 'Loading shop settings...'}
+            {activeSettings ? `${activeSettings.shop_name_th} | ${activeSettings.shop_name_en}` : 'Loading shop settings...'}
+          </div>
+          <div className="branch-selector">
+            {BRANCH_PROFILES.map((branch) => (
+              <button
+                key={branch.id}
+                className={`branch-btn ${selectedBranchId === branch.id ? 'active' : ''}`}
+                onClick={() => setSelectedBranchId(branch.id)}
+                type="button"
+              >
+                {branch.shop_name_th}
+              </button>
+            ))}
           </div>
           <div style={{ marginTop: '1.25rem' }}>
             <SearchBar onSubmit={search} loading={loading} />
@@ -300,10 +327,10 @@ export default function App() {
             ))}
           </div>
 
-          {selected && settings ? (
+          {selected && activeSettings ? (
             <>
               <div className="preview-frame">
-                <Label medicine={selected} settings={settings} preview />
+                <Label medicine={selected} settings={activeSettings} preview />
               </div>
               <div className="print-actions">
                 <button className="btn-gold" onClick={handlePrint} type="button">
@@ -317,9 +344,9 @@ export default function App() {
         </aside>
       </main>
 
-      {selected && settings && (
+      {selected && activeSettings && (
         <div ref={printRootRef} className="label-print-root">
-          <Label medicine={selected} settings={settings} />
+          <Label medicine={selected} settings={activeSettings} />
         </div>
       )}
 

@@ -9,6 +9,36 @@
 .logo-premium { font-size: 32px; margin-bottom: 0.5rem; }
 .tagline { font-size: 15px; }
 
+.branch-selector {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.branch-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-family: 'Mitr', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.branch-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.branch-btn.active {
+  background: var(--grad-gold);
+  border-color: var(--color-gold-light);
+  color: var(--color-dark);
+}
+
 /* App layout */
 .app-main {
   max-width: 1200px;
