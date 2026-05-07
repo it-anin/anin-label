@@ -31,13 +31,15 @@ export const Label = forwardRef<HTMLDivElement, Props>(
             </div>
           </div>
           <div className="label-contact">
-            <div className="label-contact-row">
-              <img className="label-contact-icon" src={phoneIcon} alt="Phone" />
-              <span>{settings.phone}</span>
-            </div>
-            <div className="label-contact-row">
-              <img className="label-contact-icon" src={lineIcon} alt="LINE" />
-              <span>{settings.line_id}</span>
+            <div className="label-contact-info">
+              <div className="label-contact-row">
+                <img className="label-contact-icon" src={phoneIcon} alt="Phone" />
+                <span>{settings.phone}</span>
+              </div>
+              <div className="label-contact-row">
+                <img className="label-contact-icon" src={lineIcon} alt="LINE" />
+                <span>{settings.line_id}</span>
+              </div>
             </div>
             <div className="label-date">{dateStr}</div>
           </div>
@@ -59,30 +61,41 @@ export const Label = forwardRef<HTMLDivElement, Props>(
         <div className="label-divider" />
 
         {medicine.usage && (
-          <div className="label-section">
-            <strong>วิธีใช้:</strong> {medicine.usage}
-          </div>
+          <>
+            <div className="label-section">
+              <strong>วิธีใช้:</strong> {medicine.usage}
+            </div>
+            <div className="label-divider" />
+          </>
         )}
 
         {medicine.indication && (
-          <div className="label-section">
-            <strong>ข้อบ่งใช้:</strong> {medicine.indication}
-          </div>
+          <>
+            <div className="label-section">
+              <strong>ข้อบ่งใช้:</strong> {medicine.indication}
+            </div>
+            <div className="label-divider" />
+          </>
         )}
 
         {(medicine.warning || medicine.storage) && (
-          <div className="label-warn">
-            {medicine.warning && (
-              <div className="label-section">
-                <strong>ข้อควรระวัง:</strong> {medicine.warning}
-              </div>
-            )}
-            {medicine.storage && (
-              <div className="label-section">
-                <strong>การเก็บรักษา:</strong> {medicine.storage}
-              </div>
-            )}
-          </div>
+          <>
+            <div className="label-warn">
+              {medicine.warning && (
+                <>
+                  <div className="label-section">
+                    <strong>ข้อควรระวัง:</strong> {medicine.warning}
+                  </div>
+                  <div className="label-divider" />
+                </>
+              )}
+              {medicine.storage && (
+                <div className="label-section">
+                  <strong>การเก็บรักษา:</strong> {medicine.storage}
+                </div>
+              )}
+            </div>
+          </>
         )}
       </div>
     );
