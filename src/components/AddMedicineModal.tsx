@@ -66,6 +66,7 @@ export function AddMedicineModal({ onClose, onSaved, initialMedicineId }: Props)
   const [translating, setTranslating] = useState(false);
   const [translateError, setTranslateError] = useState<string | null>(null);
   const skuCheckTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mouseDownOnOverlay = useRef(false);
 
   // Load existing medicine data when in edit mode
   useEffect(() => {
@@ -259,7 +260,11 @@ export function AddMedicineModal({ onClose, onSaved, initialMedicineId }: Props)
   const tr = form.translations[activeLang];
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div
+      className="modal-overlay"
+      onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => { mouseDownOnOverlay.current = e.target === e.currentTarget; }}
+      onClick={() => { if (mouseDownOnOverlay.current) onClose(); }}
+    >
       <div className="modal add-medicine-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{isEditMode ? 'แก้ไขข้อมูลฉลากยา' : 'เพิ่มฉลากยาใหม่'}</h2>
