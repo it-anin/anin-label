@@ -165,7 +165,7 @@ export function AddMedicineModal({ onClose, onSaved, initialMedicineId }: Props)
     } else {
       const { data: med, error: medErr } = await supabase
         .from('medicines')
-        .upsert({ sku, barcode: form.barcode.trim() || null }, { onConflict: 'sku' })
+        .upsert({ sku, barcode: form.barcode.trim() || null, trade_name_ref: '' }, { onConflict: 'sku,trade_name_ref' })
         .select('id')
         .single();
 
